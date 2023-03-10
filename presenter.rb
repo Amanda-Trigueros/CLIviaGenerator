@@ -1,8 +1,8 @@
 module Presenter
   def print_welcome
     puts ["####################################",
-      "#    Welcome to CLIvia Generator   #",
-      "####################################"].join("\n")
+          "#    Welcome to CLIvia Generator   #",
+          "####################################"].join("\n")
   end
 
   def print_score(score)

@@ -1,5 +1,5 @@
 module Requester
-  
+
   def select_main_menu_action
     list_options = ["random", "score", "exit"]
     gets_option(option: list_options, prompt: list_options)
@@ -7,7 +7,7 @@ module Requester
 
   def ask_question(each_question)
     CliviaGenerator.new
-
+    
     question_array = @questions[:results]
     score = 0
     for each_question in question_array
@@ -41,15 +41,16 @@ module Requester
     puts "#{"-" * 50}"
     puts "Do you want to save your score? y/n "
     input = gets.chomp
-    if input == "y" 
+    if input == "y"
       puts "Type the name to assign to the score"
       print "> "
       name = gets.chomp
       name = "Anonymus" if name == "" 
+      data = { score: score, name: name }
+      save(data)
     end
 
-    data = { score: score, name: name }
-    save(data)
+    
 
     print_welcome
   end

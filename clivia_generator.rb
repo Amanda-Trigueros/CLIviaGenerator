@@ -1,39 +1,38 @@
+require "httparty"
 require "json"
 require_relative "presenter"
 require_relative "requester"
 require "terminal-table"
 
 class CliviaGenerator
-  #attr_accessor :each_question, :user_answer
+  attr_accessor :each_question, :user_answer
 
-  #include HTTParty
+  # include HTTParty
   include Presenter
   include Requester
 
- BASE_URL = "https://opentdb.com/api.php?amount=3"
+  BASE_URL = "https://opentdb.com/api.php?amount=10"
 
-  def initialize 
+  def initialize
     @questions = []
     @user_score_array = parse_scores
-    @user_answer 
-    
+    @user_answer = ""
   end
 
   def start
     print_welcome
-   
+
     action = ""
     until action == "exit"
-      #begin
-        action = select_main_menu_action
+      action = select_main_menu_action
 
-        case action
-        when "random" then puts random_trivia
-        when "score" then puts print_scores
-        when "exit" then puts  puts ["#####################################",
-                                     "# Thanks for using CLIvia Generator #",
-                                    "#####################################"].join("\n")
-        end
+      case action
+      when "random" then puts random_trivia
+      when "score" then puts print_scores
+      when "exit" then puts  puts ["#####################################",
+                                   "# Thanks for using CLIvia Generator #",
+                                   "#####################################"].join("\n")
+      end
       # rescue HTTParty::ResponseError => e
       #  parsed_error = JSON.parse(e.message, symbolize_names: true)
       #  puts parsed_error
@@ -45,7 +44,7 @@ class CliviaGenerator
     # load the questions from the api load_questions
     # questions are loaded, then let's ask them ask_question
     load_questions
-    ask_questions    
+    ask_questions
   end
 
   def ask_questions
@@ -62,11 +61,11 @@ class CliviaGenerator
   end
 
   def parse_scores
-    scores_data = JSON.parse(File.read("score.json"), symbolize_names: true )
+    JSON.parse(File.read("score.json"), symbolize_names: true)
   end
 
   def load_questions
-    response = HTTParty.get("#{BASE_URL}")
+    response = HTTParty.get(BASE_URL)
     @questions = JSON.parse(response.body, symbolize_names: true)
   end
 
@@ -80,9 +79,8 @@ class CliviaGenerator
     table.headings = ["Name", "Score"]
     ordered_json = @user_score_array.sort_by { |x| -x[:score] }
     table.rows = ordered_json.map do |data|
-    [data[:name], data[:score]]
+      [data[:name], data[:score]]
     end
-    return table
+    table
   end
 end
-
