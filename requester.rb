@@ -1,5 +1,8 @@
-module Requester
+require "htmlentities"
 
+module Requester
+  attr_accessor :each_question, :user_answer
+  
   def select_main_menu_action
     list_options = ["random", "score", "exit"]
     gets_option(option: list_options, prompt: list_options)
@@ -7,14 +10,15 @@ module Requester
 
   def ask_question(each_question)
     CliviaGenerator.new
-    
     question_array = @questions[:results]
     score = 0
     for each_question in question_array
+      decode_question = HTMLEntities.new.decode(each_question[:question])
       puts "Category: #{each_question[:category]} | Difficulty: #{each_question[:difficulty]}"
-      puts "Question: #{each_question[:question]}"
+      puts "Question: #{decode_question}"
       all_answers = [each_question[:correct_answer]] + each_question[:incorrect_answers]
-      shuffled_answers = all_answers.shuffle
+      decode_answers = all_answers.map {|answer| HTMLEntities.new.decode(answer)}
+      shuffled_answers = decode_answers.shuffle
       shuffled_answers.each_with_index do |answer, index|
       puts "#{index + 1}. #{answer}"
       end 
@@ -24,7 +28,6 @@ module Requester
       @user_answer = shuffled_answers[user_answer_index - 1]
 
       # ASK_QUESTIONS
-      
         if user_answer == each_question[:correct_answer] 
           puts "Correct!"
           score += 10
@@ -40,7 +43,9 @@ module Requester
     puts "Well done! Your score is #{score}"
     puts "#{"-" * 50}"
     puts "Do you want to save your score? y/n "
-    input = gets.chomp
+
+    input = gets.chomp.downcase
+    
     if input == "y"
       puts "Type the name to assign to the score"
       print "> "
@@ -50,8 +55,6 @@ module Requester
       save(data)
     end
 
-    
-
     print_welcome
   end
 
@@ -60,7 +63,7 @@ module Requester
     loop do
       puts option.join(" | ")
       print "> "
-      input = gets.chomp
+      input = gets.chomp.downcase
       input ||= ""
       break if option.include?(input) || input.empty?
 

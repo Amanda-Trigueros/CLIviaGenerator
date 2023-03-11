@@ -5,14 +5,11 @@ require_relative "requester"
 require "terminal-table"
 
 class CliviaGenerator
-  attr_accessor :each_question, :user_answer
-
-  # include HTTParty
   include Presenter
   include Requester
 
-  BASE_URL = "https://opentdb.com/api.php?amount=10"
-
+  BASE_URL = "https://opentdb.com/api.php?amount=2"
+ 
   def initialize
     @questions = []
     @user_score_array = parse_scores
@@ -24,6 +21,7 @@ class CliviaGenerator
 
     action = ""
     until action == "exit"
+     # begin
       action = select_main_menu_action
 
       case action
@@ -33,11 +31,13 @@ class CliviaGenerator
                                    "# Thanks for using CLIvia Generator #",
                                    "#####################################"].join("\n")
       end
-      # rescue HTTParty::ResponseError => e
-      #  parsed_error = JSON.parse(e.message, symbolize_names: true)
-      #  puts parsed_error
+      
+      # rescue JSON::ParserError => e
+      # parsed_error = "JSON.parse(e.message, symbolize_names: true)"
+      # puts parsed_error
       # end
     end
+    
   end
 
   def random_trivia
@@ -53,6 +53,7 @@ class CliviaGenerator
     # if response is incorrect, put an incorrect message, and which was the correct answer
     # once the questions end, show user's score and promp to save it
     ask_question(each_question)
+
   end
 
   def save(data)
@@ -61,7 +62,11 @@ class CliviaGenerator
   end
 
   def parse_scores
+   begin
     JSON.parse(File.read("score.json"), symbolize_names: true)
+    rescue JSON::ParserError
+    puts "Empty Scores"
+    end 
   end
 
   def load_questions
