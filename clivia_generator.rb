@@ -9,7 +9,7 @@ class CliviaGenerator
   include Requester
 
   BASE_URL = "https://opentdb.com/api.php?amount=2"
- 
+
   def initialize
     @questions = []
     @user_score_array = parse_scores
@@ -21,39 +21,25 @@ class CliviaGenerator
 
     action = ""
     until action == "exit"
-     # begin
       action = select_main_menu_action
 
       case action
-      when "random" then puts random_trivia
+      when "random" then random_trivia
       when "score" then puts print_scores
-      when "exit" then puts  puts ["#####################################",
-                                   "# Thanks for using CLIvia Generator #",
-                                   "#####################################"].join("\n")
+      when "exit" then puts ["#####################################",
+                            "# Thanks for using CLIvia Generator #",
+                            "#####################################"].join("\n")
       end
-      
-      # rescue JSON::ParserError => e
-      # parsed_error = "JSON.parse(e.message, symbolize_names: true)"
-      # puts parsed_error
-      # end
     end
-    
   end
 
   def random_trivia
-    # load the questions from the api load_questions
-    # questions are loaded, then let's ask them ask_question
     load_questions
     ask_questions
   end
 
   def ask_questions
-    # ask each question
-    # if response is correct, put a correct message and increase score
-    # if response is incorrect, put an incorrect message, and which was the correct answer
-    # once the questions end, show user's score and promp to save it
     ask_question(each_question)
-
   end
 
   def save(data)
@@ -62,20 +48,15 @@ class CliviaGenerator
   end
 
   def parse_scores
-   begin
     JSON.parse(File.read("score.json"), symbolize_names: true)
     rescue JSON::ParserError
-    puts "Empty Scores"
-    end 
+      []
+    end
   end
 
   def load_questions
     response = HTTParty.get(BASE_URL)
     @questions = JSON.parse(response.body, symbolize_names: true)
-  end
-
-  def parse_questions
-    # questions came with an unexpected structure, clean them to make it usable for our purposes
   end
 
   def print_scores
