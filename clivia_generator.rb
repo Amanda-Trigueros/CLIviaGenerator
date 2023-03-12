@@ -7,6 +7,7 @@ require "pry"
 
 class CliviaGenerator
   attr_reader :filename
+
   include Presenter
   include Requester
 
@@ -18,7 +19,7 @@ class CliviaGenerator
     @user_score_array = parse_scores
     @user_answer = ""
   end
-  
+
   def start
     print_welcome
 
@@ -29,9 +30,9 @@ class CliviaGenerator
       case action
       when "random" then random_trivia
       when "score" then puts print_scores
-      when "exit" then   puts ["#####################################",
-                              "# Thanks for using CLIvia Generator #",
-                              "#####################################"].join("\n")
+      when "exit" then puts ["#####################################",
+                            "# Thanks for using CLIvia Generator #",
+                            "#####################################"].join("\n")
       end
     end
   end
@@ -52,10 +53,10 @@ class CliviaGenerator
 
   def parse_scores
     begin
-     JSON.parse(File.read(@filename), symbolize_names: true)
+    JSON.parse(File.read(@filename), symbolize_names: true)
     rescue JSON::ParserError
-     Array.new
-    end 
+    Array.new
+    end
   end
 
   def load_questions
