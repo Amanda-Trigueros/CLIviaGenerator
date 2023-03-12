@@ -3,19 +3,22 @@ require "json"
 require_relative "presenter"
 require_relative "requester"
 require "terminal-table"
+require "pry"
 
 class CliviaGenerator
+  attr_reader :filename
   include Presenter
   include Requester
 
-  BASE_URL = "https://opentdb.com/api.php?amount=2"
+  BASE_URL = "https://opentdb.com/api.php?amount=10"
 
-  def initialize
+  def initialize(filename)
+    @filename = filename
     @questions = []
     @user_score_array = parse_scores
     @user_answer = ""
   end
-
+  
   def start
     print_welcome
 
@@ -26,9 +29,9 @@ class CliviaGenerator
       case action
       when "random" then random_trivia
       when "score" then puts print_scores
-      when "exit" then puts ["#####################################",
-                            "# Thanks for using CLIvia Generator #",
-                            "#####################################"].join("\n")
+      when "exit" then   puts ["#####################################",
+                              "# Thanks for using CLIvia Generator #",
+                              "#####################################"].join("\n")
       end
     end
   end
@@ -44,14 +47,15 @@ class CliviaGenerator
 
   def save(data)
     @user_score_array << data
-    File.write("score.json", JSON.pretty_generate(@user_score_array))
+    File.write(@filename, JSON.pretty_generate(@user_score_array))
   end
 
   def parse_scores
-    JSON.parse(File.read("score.json"), symbolize_names: true)
+    begin
+     JSON.parse(File.read(@filename), symbolize_names: true)
     rescue JSON::ParserError
-      []
-    end
+     Array.new
+    end 
   end
 
   def load_questions

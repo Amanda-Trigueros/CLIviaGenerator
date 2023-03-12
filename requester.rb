@@ -9,7 +9,7 @@ module Requester
   end
 
   def ask_question(each_question)
-    CliviaGenerator.new
+    CliviaGenerator.new(filename)
     question_array = @questions[:results]
     score = 0
     for each_question in question_array
