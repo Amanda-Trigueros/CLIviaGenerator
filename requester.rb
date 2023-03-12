@@ -32,7 +32,7 @@ module Requester
         score += 10
       else
         puts "#{user_answer}...Incorrect!"
-        puts "The correct answer was: #{each_question[:correct_answer]}"
+        puts "The correct answer was: #{HTMLEntities.new.decode(each_question[:correct_answer])}"
       end
     end
     will_save?(score)
