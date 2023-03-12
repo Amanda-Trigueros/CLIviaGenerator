@@ -27,7 +27,7 @@ module Requester
       user_answer_index = gets.chomp.to_i
       @user_answer = shuffled_answers[user_answer_index - 1]
 
-      if user_answer == each_question[:correct_answer]
+      if user_answer == HTMLEntities.new.decode(each_question[:correct_answer])
         puts "Correct!"
         score += 10
       else
